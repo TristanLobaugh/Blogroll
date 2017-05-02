@@ -1,3 +1,5 @@
+Backbone.Model.prototype.idAttribute = '_id';
+
 // Backbone Model
 const Blog = Backbone.Model.extend({
 	default: {
@@ -8,7 +10,9 @@ const Blog = Backbone.Model.extend({
 });
 
 // Backbone Collection
-const Blogs = Backbone.Collection.extend({});
+const Blogs = Backbone.Collection.extend({
+	url: 'http://localhost:3000/api/blogs'
+});
 
 // instantiate 2 blogs
 // const blog1 = new Blog({
@@ -80,6 +84,17 @@ const BlogsView = Backbone.View.extend({
 		this.model.on('add', this.render, this);
 		this.model.on('change', this.render, this);
 		this.model.on('remove', this.render, this);
+
+		this.model.fetch({
+			success(response) {
+				_.each(response.toJSON(), item => {
+					console.log(`Succesfully got blog with _id: ${item._id}`);
+				});
+			},
+			error() {
+				console.log('Failed to get blogs');
+			}
+		});
 	},
 	render() {
 		const self = this;
@@ -103,8 +118,15 @@ $(document).ready(() => {
 		$('.author-input').val('');
 		$('.title-input').val('');
 		$('.url-input').val('');
-		console.log(blog.toJSON());
 		blogs.add(blog);
+		blog.save(null, {
+			success(response) {
+				console.log(`Successfully SAVED blog with _id: ${response.toJSON()._id}`);
+			},
+			error() {
+				console.log('Failed to save blog!');
+			}
+		});
 	});
 });
 
