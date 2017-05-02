@@ -33,6 +33,39 @@ const BlogView = Backbone.View.extend({
 	initialize() {
 		this.template = _.template($('.blogs-list-template').html());
 	},
+	events: {
+		'click .edit-blog': 'edit',
+		'click .update-blog': 'update',
+		'click .cancel': 'cancel',
+		'click .delete-blog': 'delete'
+	},
+	edit() {
+		$('.edit-blog').hide();
+		$('.delete-blog').hide();
+		this.$('.update-blog').show();
+		this.$('.cancel').show();
+
+		const author = this.$('.author').html();
+		const title = this.$('.title').html();
+		const url = this.$('.url').html();
+
+		this.$('.author').html(`<input type="text" class="form-control author-update" value="${author}">`);
+		this.$('.title').html(`<input type="text" class="form-control title-update" value="${title}">`);
+		this.$('.url').html(`<input type="text" class="form-control url-update" value="${url}">`);
+	},
+	update() {
+		this.model.set({
+			'author': this.$('.author-update').val(),
+			'title': this.$('.title-update').val(),
+			'url': this.$('.url-update').val()
+		});
+	},
+	cancel() {
+		blogsView.render();
+	},
+	delete() {
+		this.model.destroy();
+	},
 	render() {
 		this.$el.html(this.template(this.model.toJSON()));
 		return this;
@@ -43,7 +76,10 @@ const BlogsView = Backbone.View.extend({
 	model: blogs,
 	el: $('.blogs-list'),
 	initialize() {
+		const self = this;
 		this.model.on('add', this.render, this);
+		this.model.on('change', this.render, this);
+		this.model.on('remove', this.render, this);
 	},
 	render() {
 		const self = this;
