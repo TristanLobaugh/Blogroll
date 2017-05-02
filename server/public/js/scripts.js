@@ -63,12 +63,28 @@ const BlogView = Backbone.View.extend({
 			'title': this.$('.title-update').val(),
 			'url': this.$('.url-update').val()
 		});
+
+		this.model.save(null, {
+			success(response) {
+				console.log(`Successfully UPDATED blog with _id: ${response.toJSON()._id}`);
+			},
+			error() {
+				console.log('Failed to update blog!');
+			}
+		});
 	},
 	cancel() {
 		blogsView.render();
 	},
 	delete() {
-		this.model.destroy();
+		this.model.destroy({
+			success(response) {
+				console.log(`Successfully DELETED blog with _id: ${response.toJSON._id}`);
+			},
+			error() {
+				console.log('Failed to DELETE blog!');
+			}
+		});
 	},
 	render() {
 		this.$el.html(this.template(this.model.toJSON()));

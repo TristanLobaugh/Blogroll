@@ -51,6 +51,20 @@ app.post('/api/blogs', (req, res) => {
 	});
 });
 
+app.delete('/api/blogs/:id', (req, res) => {
+	console.log(`Recieved a DELETE request for _id: ${req.params.id}`);
+	Blog.remove({ _id: req.params.id }, err => {
+		res.send({ _id: req.params.id });
+	});
+});
+
+app.put('/api/blogs/:id', (req, res) => {
+	console.log(`Recieved an update request for _id: ${req.params.id}`);
+	Blog.update({ _id: req.params.id }, req.body, err => {
+		res.send({ _id: req.params.id });
+	});
+});
+
 const port = 3000;
 
 app.listen(port);
